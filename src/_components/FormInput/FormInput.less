@@ -1,0 +1,83 @@
+.flex-group-container {
+    padding-top:20px;
+}
+.flex-group-wrap{
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    &._deletable {
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 0;
+        &>a {
+            cursor: pointer;
+            margin-top: 30px;
+            margin-left: 20px;
+            img {
+                display: block;
+                width: 10px;
+                height: 10px;
+            }
+        }
+        .flex-control-group:nth-child(even){
+            width: ~"calc(100%/2 - 15px/2 - 30px)";
+        }
+    }
+}
+
+.flex-control-group{
+    display: flex;
+    flex-direction: column;
+    width: ~"calc(100%/2 - 15px/2)";
+    &:nth-child(odd) {
+        margin-right: 15px;
+    }
+    &.full-width {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+.form-select{
+    height: 56px;
+}
+
+.form-select__control{
+    height: 56px !important;
+}
+
+.form-select__indicator-separator{
+    display: none;
+}
+
+.form-select__menu{
+    margin: 1px 0 0 !important;
+    border: none;
+}
+
+.form-select__menuList{
+    margin: 0;
+    border: none;
+}
+
+.react-datepicker__input-container{
+    width: 290px;
+}
+
+.datepicker-wrapper {
+    position: relative;
+    .react-datepicker-wrapper {
+        width: 100%;
+    }
+    .react-datepicker__input-container {
+        width: 100%;
+    }
+    img {
+        display: block;
+        position: absolute;
+        width: 16px;
+        top: 20px;
+        right: 16px;
+    }
+}

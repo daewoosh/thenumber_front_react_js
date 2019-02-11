@@ -1,0 +1,112 @@
+@import '../../styles/_variables';
+
+.header{
+    height: 80px;
+    width: 100%;
+    background-color: @white;
+}
+
+.header-content{    
+    height: inherit;
+    max-width: 976px;
+    padding: 0 15px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+
+.header-nav{
+    display: flex;  
+}
+
+.logo{
+   display: inline-flex;
+   margin-right: 80px;
+   cursor: pointer;
+}
+
+ul.nav-links{
+    display: flex;
+    margin:0;
+    padding: 0;
+    align-content: center;
+}
+
+ul.nav-links li {
+    display: inline; /* Отображать как строчный элемент */
+    text-decoration: none;
+    margin-right: 32px;
+    padding: 0;
+    /* color: @black; */
+    align-self: center;
+   }
+
+   ul.nav-links li a{
+    color: @black;   
+   }
+
+   li a:hover {
+    text-decoration:none;
+    color: @black;
+ }
+
+.header-user-info{
+    display: inline;
+}
+.header-user-info a{
+    text-decoration:none;
+}
+.header-user-info a:hover{
+    text-decoration:none;
+}
+.header-user{
+    /* display: inline; */
+    align-self: center;
+    margin-left: auto;
+}
+
+.exit-btn {
+    text-decoration: none;
+    cursor: pointer;
+ }
+
+ .user-info-fullname {
+    line-height: 20px;
+    font-size: 16px;
+    color: @black;
+    font-weight: 500;
+    margin-right: 27px
+ }
+.header-user-link{
+
+}
+ .user-info-avatar{
+    overflow: hidden;
+    -webkit-border-radius: 100%;
+    border-radius: 100%;
+    height: 48px;
+    width: 48px;
+    -o-object-fit: cover;
+    object-fit: cover;
+    margin-right: .625rem;
+    /* margin-bottom: 16px; */
+ }
+
+ button.register{
+    width: 160px;
+    height: 40px;
+    font-size: 13px;
+ }
+
+ button.white-btn{
+    background:  @light;
+    border-color: @light;
+    color: @black;
+    width: 72px;
+    margin-left: 8px;
+    &:hover {
+        background: darken(@light, 10%);
+        border-color: darken(@light, 10%);
+        color: @black;
+    }
+ }

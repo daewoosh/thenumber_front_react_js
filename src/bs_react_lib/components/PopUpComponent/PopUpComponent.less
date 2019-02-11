@@ -1,0 +1,57 @@
+@keyframes slide-right {
+    from {
+      transform: translate3d(100%, 0,  0)
+    }
+  
+    to {
+      transform: translate3d(0, 0, 0)
+    }
+  }
+  @keyframes slide-left {
+    from {
+      transform: translate3d(-100%, 0,  0)
+    }
+  
+    to {
+      transform: translate3d(0, 0, 0)
+    }
+  }
+  @keyframes slide-top {
+    from {
+      transform: translate3d(0, -100%,  0)
+    }
+  
+    to {
+      transform: translate3d(0, 0, 0)
+    }
+  }
+  @keyframes slide-bottom {
+    from {
+      transform: translate3d(0, 100%,  0)
+    }
+    to {
+      transform: translate3d(0, 0, 0)
+    }
+  }
+.right-slide{
+    animation: slide-right .5s ease !important;
+  }
+  .left-slide{
+    left: 0px;
+    animation: slide-left .5s ease;
+  }
+  .top-slide{
+    animation: slide-top .5s ease;
+    /* left: 50%; */
+    
+  }
+  .bottom-slide{
+    animation: slide-bottom .5s ease;
+    /* right: 50%;  */
+  }
+  ._isshown{
+      display: block;
+  }
+  ._ishide{
+      display: none;
+  }

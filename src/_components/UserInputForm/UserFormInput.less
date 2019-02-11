@@ -1,0 +1,114 @@
+@import '../../styles/_variables.less';
+
+.input-form-container{
+    display: flex;
+    flex-direction: column;
+    width: 648px;
+}
+
+.input-form-content{
+    display: flex;
+    flex-direction: column;
+    margin: 24px;
+}
+
+.input-form-heading{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.input-form-heading span{
+    font-family: @normal-font;
+    line-height: 40px;
+    font-size: 32px;
+}
+
+.input-form-type{
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.input-form-type span{
+    font-family: @bold-font;
+    line-height: 20px;
+    font-size: 16px;
+}
+
+.input-form-type-items{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.input-form-type-item{
+    width: ~"calc(100%/2 - 10px/2)";
+    display: flex;
+    border: 1px solid #C7C7C7;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    position: relative;
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid transparent;
+        border-radius: 4px;
+    }
+    &._selected {
+        background: @light;
+        border-color: transparent;
+        &:before {
+            border: 2px solid @primary;
+        }
+    }
+}
+
+.input-form-type-item:nth-child(odd){
+    margin-right: 10px;
+}
+
+.input-form-controls{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;    
+    margin-top: 24px;
+}
+
+.input-form-save-btn{
+    font-weight: 500;
+    line-height: 20px;
+    font-size: 16px;
+    text-align: center;
+    width: 292px;
+    height: 56px;
+}
+
+.input-form-del-btn{
+    .input-form-save-btn;
+    background: #39D0E7;
+    border-color: #39D0E7;
+}
+
+.input-form-del-btn:hover{
+    background: #39D0E7;
+    border-color: #39D0E7;
+}
+
+.input-form-checkbox {
+    label {
+        font-weight: normal;
+    }
+    input {
+        margin-right: 10px;
+    }
+    
+}

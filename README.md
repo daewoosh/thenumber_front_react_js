@@ -1,1 +1,7 @@
-# thenumber_front_react_js
+сначала выполняем npm i
+
+для запуска в режиме разработки выполняем npm run dev
+
+проект запуститься по адресу localhost:2004/index_dev.html/#/home
+
+в файле webconfig.js можно указать куда ходить за API (url который на хостинге там имеется)
