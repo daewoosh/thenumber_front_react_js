@@ -9,7 +9,6 @@ const PrivateRoute = (props) => {
     }
     //  if (props.ignoreProfileFilled && props.ignoreProfileFilled == 'false')
     var isFilled = isProfileFilled();
-    debugger;
     if (isFilled===false) {
       return (<Redirect to="/startWizard" />);
     }

@@ -9,6 +9,13 @@ html, body {
     font-family: @normal-font;
     font-size: 14px;
 }
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+}
+
+label {
+    font-weight: normal;
+}
 
 #root {
     width: 100%;
@@ -167,6 +174,7 @@ html, body {
     }
 }
 
+
 .section-title{
     display: flex;
     height: 56px;
@@ -295,7 +303,7 @@ html, body {
 
 .list-item-left{
      .flex-center;
-     flex-basis: 80%;
+     flex-basis: 60%;
      .list-item-icon {
         margin-right: 16px;
      }
@@ -309,7 +317,7 @@ html, body {
 
 .list-item-right{
     .flex-center;
-    flex-basis: 20%;
+   // flex-basis: 20%;
     flex-direction: column;
     text-align: right;
     align-items: flex-end;
@@ -439,6 +447,12 @@ button:active{
 button:hover{
     background: @primary-hover;
     border-color: @primary-hover;
+    color: @white;
+}
+
+button:disabled{
+    background: @primary-disabled;
+    border-color: @primary-disabled;
     color: @white;
 }
 
@@ -726,8 +740,12 @@ button:hover{
 }
 
 .slider-form {
+    display: flex;
+    justify-content: space-between;
+
     .panel-form-group {
         margin-bottom: 16px;
+        flex-basis: 48%;
     }
 
     input.form-control {
@@ -781,9 +799,94 @@ button:hover{
     }
 
 }
+
+.aim-note {
+    background-color: @light;
+    padding: 16px;
+    border-radius: @border-radius;
+    font-size: 14px;
+    margin-bottom: 8px;
+    span {
+        font-family: @bold-font;
+    }
+}
+
+.aim-income-block {
+   margin-top: 16px;
+}
+
+.aim-income-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    h4 {
+        font-size: 16px;
+        font-family: @bold-font;
+    }
+}
+
+.toggle-block {
+    .transition();
+    &:hover {cursor: pointer;}
+    img {
+        width: 26px;
+    }
+    .widget-title {
+        margin-right: 10px;
+        &._active {
+            color: @primary;
+        }
+    }
+}
+
+.radio-block {
+    border: 1px solid #ccc;
+    border-radius: @border-radius;
+    padding: 16px;
+    margin-bottom: 8px;
+    .transition();
+    &:hover {cursor: pointer;}
+    &._active {
+        border: 2px solid @primary;
+        background-color: @light;
+    }
+}
+
+.radio-control {
+    display: flex;
+    align-items: flex-start;
+    h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    p {
+        color: @grey;
+        font-size: 14px;
+    }
+    span {
+        font-size: 18px;
+        font-family: @bold-font;
+    }
+    img {
+        display: block;
+        margin-right: 16px;
+    }
+}
+
 .tooltip-label{
     display: flex;
     flex-direction: row;
     align-items: center;
     align-content: center;
+}
+
+.recommendation-title{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #202020;
 }

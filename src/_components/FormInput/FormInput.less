@@ -39,12 +39,22 @@
     }
 }
 
-.form-select{
-    height: 56px;
+.form-checkbox {
+    input {margin-right: 10px;}
 }
 
+.form-select{
+   // height: 56px;
+}
+.panel-form-group .form-select input {
+    height: 44px;
+}
 .form-select__control{
-    height: 56px !important;
+    //height: 56px !important;
+}
+
+.form-select__value-container {
+    padding: 2px 12px !important;
 }
 
 .form-select__indicator-separator{
@@ -80,4 +90,15 @@
         top: 20px;
         right: 16px;
     }
+}
+
+.error{
+    border: 2px solid #EB5757;
+}
+
+.control-error{
+    font-weight: normal;
+    line-height: 16px;
+    font-size: 13px;
+    color: #EB5757;
 }

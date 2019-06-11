@@ -26,7 +26,7 @@ export class Dashboard extends React.Component {
         this.financeStore.loadPassiveItems();
         this.budgetStore.loadIncomeItems();
         this.budgetStore.loadExpenceItems();
-        this.reportStore.getReport();
+        this.reportStore.getReport(true);
     }
 
     onHideClick = () => {

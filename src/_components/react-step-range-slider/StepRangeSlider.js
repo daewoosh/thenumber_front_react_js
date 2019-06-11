@@ -29,7 +29,6 @@ export default class StepRangeSlider extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (nextProps.range && nextProps.range !== this.props.range) {
       this.setInitialState(nextProps)
     }

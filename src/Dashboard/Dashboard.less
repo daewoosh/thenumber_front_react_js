@@ -173,6 +173,63 @@
         }
 
     }
+    .recharts-tooltip-cursor {
+        fill: @white !important;
+    }
+    // recharts-tooltip-wrapper recharts-tooltip-wrapper-right recharts-tooltip-wrapper-top
+    .barChart-tooltip {
+        z-index: 99999999;
+        background-color: @black;
+        border-radius: @border-radius;
+        padding: 16px 20px;
+        display: flex;
+        width: 250px;
+        position: relative;
+        justify-content: space-between;
+        &:after {
+            content: ''; 
+            position: absolute; 
+            left: 45%; 
+            bottom: -20px;
+            border: 10px solid transparent;	
+            border-top: 10px solid @black;
+           }
+        .tooltip-col {
+            flex-basis: auto;
+            color: @white;
+            span {display: block;}
+            .tooltip-col-title {
+                font-size: 14px;
+                padding-bottom: 5px;
+                &:before {
+                    content:'';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    margin-right: 5px;
+                }
+            }
+            .tooltip-col-value {
+                font-size: 16px;
+                font-family: @bold-font;
+            }
+            &:nth-child(1) {
+                .tooltip-col-title {
+                    &:before {
+                        background-color: @primary;
+                    }
+                }
+            }
+            &:nth-child(2) {
+                .tooltip-col-title {
+                    &:before {
+                        background-color: @accent;
+                    }
+                }
+            }
+        }
+    }
 
     #translated-block {
         transition: all 0.3s ease-in-out;
@@ -219,16 +276,11 @@
         }
 
     }
-
     .recharts-layer.recharts-bar-rectangle {cursor: pointer;}
-    
     .recharts-cartesian-axis-line {stroke: lighten(@black, 75%);}
-
     .recharts-cartesian-axis-tick-line,
     .recharts-cartesian-grid-vertical {display: none;}
-
     .recharts-cartesian-grid-horizontal line {stroke: lighten(@black, 75%);}
-
 }
 
 .variable-data {
@@ -422,4 +474,101 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+
+.user-plans-container .accordion {
+    border: none;
+    border-radius: 0;
+    margin-top: 1rem;
+}
+
+.rec-item {
+    .accordion__button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: transparent;
+        padding: 10px;
+        &:hover {
+            background-color: #fafafa;
+        }
+        &:focus {
+            outline: none
+        }
+        &:before {
+            order: 2;
+            display: none;
+        }
+        .rec-item-heading {
+            order: 1;
+            display: inline-flex;
+            align-items: center;
+            span {
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                background-color: @light;
+                border-radius: 50%;
+                width: 32px;
+                height: 32px;
+                margin-right: 16px;
+                &._current {
+                    background-color: @primary;
+                    color: @white;
+                }
+                img {
+
+                }
+            }
+            h4 {
+                font-size: 16px;
+                font-family: @bold-font;
+            }
+        }
+    }
+    .accordion__panel {
+        padding: 10px;
+    }
+    .rec-item-content {
+        padding-left: 48px;
+        h6 {
+            font-size: 16px;
+            margin-top: 0;
+        }
+        p {
+            font-size: 14px;
+            color:@grey;
+            white-space: pre-line;
+        }
+        .rec-item-action {
+
+        }
+        .rec-item-input {
+            display: flex;
+            align-items: center;
+            margin: 24px 0 0;
+            .panel-form-group {
+                margin: 0;
+                margin-right: 10px;
+                label {display: none;}
+            }
+            .button {
+                height: 56px;
+                padding: 0 24px;
+            }
+        }
+        .rec-cancel-btn {
+            background-color: transparent;
+            color: @primary;
+            font-size: 14px;
+            border: none;
+            padding: 0;
+        }
+        .rec-error {
+            color: @error;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+    }
 }

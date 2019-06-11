@@ -15,9 +15,9 @@ export class Footer extends React.Component {
                         <ul className="nav-links">
                             {/* <li><a href='' className="white">О нас</a></li>
                             <li><a href='' className="white">Цены</a></li> */}
-                            <li><a href='' className="white">Оферта</a></li>
+                            <li><a href='https://thenumber.app/agreements' target='_blank' className="white">Оферта</a></li>
                             {/* <li><a href='' className="white">Блог</a></li> */}
-                            <li><a href='' className="white">Контакты</a></li>
+                            <li><a href='https://thenumber.app/contacts' target='_blank' className="white">Контакты</a></li>
                         </ul>
                     </div>
                     {/* <div className="footer-social">

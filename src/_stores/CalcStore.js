@@ -1,4 +1,5 @@
 import BSMobxStore from 'bs_react_lib/stores/BSMobxStore2';
+import { getComp } from '../bs_react_lib/utils/bsDI';
 
 import { observable, action, toJS } from 'mobx';
 import { ajaxReq } from '_services/WebApi';
@@ -28,7 +29,7 @@ export default class CalcStore extends BSMobxStore {
     pensionAge = 0;
 
     @observable
-    totalKapital = 0;
+    totalСapital = 0;
 
     @observable
     savedConservativeInvestments = 0;
@@ -61,10 +62,19 @@ export default class CalcStore extends BSMobxStore {
     selectedAge = 0;
 
     @observable
+    selectedLiveAge = 0;
+
+    @observable
+    selectedYear = 0;
+
+    @observable
     selectedIncome = 0;
 
     @observable
-    selectedKapital = 0;
+    selectedCapital = 0;
+
+    @observable
+    selectedSpendAmount = 0;
 
     @observable
     minAge = 0;
@@ -79,13 +89,13 @@ export default class CalcStore extends BSMobxStore {
     minIncome = 0;
 
     @observable
-    maxKapital = 0;
+    maxСapital = 0;
 
     @observable
-    minKapital = 0;
+    minСapital = 0;
 
     incomeRange = [];
-    kapitalRange = [];
+    сapitalRange = [];
 
     isFullReport = true;
 
@@ -98,8 +108,22 @@ export default class CalcStore extends BSMobxStore {
     @observable
     reportFilled = false;
 
+    @observable
+    isInflationSelected = false;
+
+    @observable
+    spendCapital = false;
+
     @action
-    getReport() {
+    getReport(isReload) {
+        //если отчет загружен
+        //то если  isReload то порегрузим его
+        //а если нет, то ничего не делаем
+        if (this.reportFilled === true) {
+            if (isReload === true) { }
+            else
+                return false;
+        }
         var getRes = getCalcResult();
         getRes.then((data) => this.setData(data))
             .catch((err) => {
@@ -109,7 +133,7 @@ export default class CalcStore extends BSMobxStore {
 
     @action
     setData(data) {
-        this.totalKapital = data.TotalKapital;
+        this.totalСapital = data.TotalСapital;
         this.monthlyIncome = data.MonthlyIncome;
         this.agressivePercent = data.AgressivePercent;
         this.conservativePercent = data.ConservativePercent;
@@ -122,24 +146,86 @@ export default class CalcStore extends BSMobxStore {
         this.incomesByAges = data.IncomeByAges;
         var last_element = data.Periods[data.Periods.length - 1];
         this.selectedAge = last_element.CurrentAge;
-        this.selectedKapital = Math.round(data.TotalKapital);
-        this.selectedIncome = Math.round(data.MonthlyIncome);
+        this.selectedLiveAge = data.SpendTillAge;
+
+        this.isInflationSelected = data.UseInflation;
+        // debugger;
+        // if (this.isInflationSelected===true) {
+        //     this.selectedCapital = Math.round(data.TotalСapital);
+        // }
+        // else {
+        //     this.selectedCapital = Math.round(data.TotalCapitalWithInflation);
+        // }
+        //this.selectedIncome = Math.round(data.MonthlyIncome);
         this.minAge = data.Periods[0].CurrentAge;
         this.maxAge = data.IncomeByAges[data.IncomeByAges.length - 1].Age;
         this.maxIncome = Math.round(data.IncomeByAges[data.IncomeByAges.length - 1].MonthlyIncome);
         this.minIncome = Math.round(data.IncomeByAges[0].MonthlyIncome);
-        this.maxKapital = Math.round(data.IncomeByAges[data.IncomeByAges.length - 1].Kapital);
-        this.minKapital = Math.round(data.IncomeByAges[0].Kapital);
+        this.maxСapital = Math.round(data.IncomeByAges[data.IncomeByAges.length - 1].Capital);
+        this.minСapital = Math.round(data.IncomeByAges[0].Сapital);
         this.isFullReport = data.IsFull;
         this.pensionAge = data.PensionAge;
         this.getIncomeRange();
+        this.selectCapitalAndIncome();
+        this.initRecommendationStore(data.Periods);
         super.setData();
         this.selectPeriod((new Date()).getFullYear());
-        var ddd = data.Periods.filter(item => item.CurrentMonth == 12);
-        debugger;
         this.decemberPeriods = data.Periods.filter(item => item.CurrentMonth == 12);
+
+        this.spendCapital = data.SpendCapital;
         this.reportFilled = true;
     }
+
+    initRecommendationStore(allPeriods) {
+        var currentDate = new Date();
+        var currentPeriod = allPeriods.filter(item=>item.CurrentMonth == (currentDate.getMonth()+1) && item.CurrentYear == currentDate.getFullYear())[0];
+        if (currentPeriod){
+            var recomStore = getComp('RecommendationStore');
+            recomStore.setCurrentRecommendations(currentPeriod.Recommendations);
+        }
+
+    }
+
+    selectCapitalAndIncome() {
+        var copy = toJS(this.incomesByAges);
+        for (var i = 0; i < copy.length - 11; i++) {
+            if (copy[i].Age === this.pensionAge) {
+                this.selectedYear = copy[i].Year;
+                // this.selectedCapital = copy[i].Capital;
+                // this.selectedIncome = copy[i].MonthlyIncome;
+            }
+            // if (copy[i].Age === this.selectedLiveAge) {
+            //     this.selectedSpendAmount = this.calcMonthlySpend(copy[i].Capital);
+            // }           
+        }
+        const filteredArray = copy.filter(item => item.Age == this.selectedAge && item.Month == 12);
+        this.selectedIncome = Math.round(filteredArray[0].MonthlyIncome);
+
+        let capital;
+
+        if (this.isInflationSelected === true) {
+            capital = Math.round(filteredArray[0].CapitalWithInflation);
+        }
+        else {
+            capital = Math.round(filteredArray[0].Capital);
+        }
+        this.selectedCapital = capital;
+        this.selectedSpendAmount = this.calcMonthlySpend(this.selectedCapital);
+    }
+
+    calcMonthlySpend(capital) {
+        const A = capital;
+        const i = 0.1;
+        const n = this.selectedLiveAge - this.selectedAge;
+        const m = 12;
+        const pow = Math.pow((1 + (i / m)), (m * n));
+
+        var top = A * pow;
+        var bottom = (m / i) * (pow - 1);
+
+        return top / bottom;
+    }
+
 
     selectPeriod(year) {
         var copy = toJS(this.periods);
@@ -165,8 +251,11 @@ export default class CalcStore extends BSMobxStore {
             if (allYearPeriods[i].Vacation > 0) {
                 this.selectedPeriod.expences.push({ iconType: 'umbrella', amount: allYearPeriods[i].Vacation, month: monthName, name: 'Отпуск' });
             }
-            if (allYearPeriods[i].OtherPlannedExpence > 0) {
-                this.selectedPeriod.expences.push({ iconType: 'expence', amount: allYearPeriods[i].OtherPlannedExpence, month: monthName, name: 'Прочее' });
+            if (allYearPeriods[i].OtherExpences > 0) {
+                this.selectedPeriod.expences.push({ iconType: 'expence', amount: allYearPeriods[i].OtherExpences, month: monthName, name: 'Прочее' });
+            }
+            if (allYearPeriods[i].CreditPayments > 0) {
+                this.selectedPeriod.expences.push({ iconType: 'moneyBag', amount: allYearPeriods[i].CreditPayments, month: monthName, name: 'Кредит' });
             }
         }
     }
@@ -199,7 +288,7 @@ export default class CalcStore extends BSMobxStore {
 
     getIncomeRange() {
         this.incomeRange = [];
-        this.kapitalRange = [];
+        this.capitalRange = [];
         var copy = toJS(this.incomesByAges);
         if (this.isFullReport) {
             for (var index = 0; index < copy.length - 11; index++) {
@@ -209,7 +298,7 @@ export default class CalcStore extends BSMobxStore {
                     if (diff === 0)
                         continue;
                     this.incomeRange.push({ value: Math.round(copy[index].MonthlyIncome), step: diff })
-                    this.kapitalRange.push({ value: Math.round(copy[index].Kapital), step: Math.round(copy[index + 11].Kapital) - Math.round(copy[index].Kapital) })
+                    this.capitalRange.push({ value: Math.round(copy[index].Capital), step: Math.round(copy[index + 11].Capital) - Math.round(copy[index].Capital) })
                 }
             }
         }
@@ -217,10 +306,10 @@ export default class CalcStore extends BSMobxStore {
             for (var index = 1; index < copy.length - 1; index++) {
 
                 this.incomeRange.push({ value: Math.round(copy[index].MonthlyIncome), step: Math.round(copy[index + 1].MonthlyIncome) - Math.round(copy[index].MonthlyIncome) })
-                this.kapitalRange.push({ value: Math.round(copy[index].Kapital), step: Math.round(copy[index + 1].Kapital) - Math.round(copy[index].Kapital) })
+                this.capitalRange.push({ value: Math.round(copy[index].Capital), step: Math.round(copy[index + 1].Capital) - Math.round(copy[index].Capital) })
             }
         }
-        this.kapitalRange.push({ value: Math.round(copy[copy.length - 1].Kapital) })
+        this.capitalRange.push({ value: Math.round(copy[copy.length - 1].Capital) })
         this.incomeRange.push({ value: Math.round(copy[copy.length - 1].MonthlyIncome) });
     }
 
@@ -238,7 +327,24 @@ export default class CalcStore extends BSMobxStore {
         var copy = toJS(this.incomesByAges);
         const filteredArray = copy.filter(item => item.Age == age && item.Month == 12);
         this.selectedIncome = Math.round(filteredArray[0].MonthlyIncome);
-        this.selectedKapital = Math.round(filteredArray[0].Kapital);
+
+        let capital;
+
+        if (this.isInflationSelected === true) {
+            capital = Math.round(filteredArray[0].CapitalWithInflation);
+        }
+        else {
+            capital = Math.round(filteredArray[0].Capital);
+        }
+
+        this.selectedCapital = capital;
+        this.selectedYear = filteredArray[0].Year;
+        this.selectedSpendAmount = this.calcMonthlySpend(this.selectedCapital);
+    }
+    @action
+    updateLiveByAge(age) {
+        this.selectedLiveAge = age;
+        this.selectedSpendAmount = this.calcMonthlySpend(this.selectedCapital);
     }
 
     @action
@@ -247,7 +353,7 @@ export default class CalcStore extends BSMobxStore {
         var cc = this.closest(income, copy);
         this.selectedAge = cc.Age;
         this.selectedIncome = Math.round(cc.MonthlyIncome);
-        this.selectedKapital = Math.round(cc.Kapital)
+        this.selectedCapital = Math.round(cc.Capital)
     }
 
     closest(num, arr) {
@@ -267,10 +373,21 @@ export default class CalcStore extends BSMobxStore {
 
     @action
     saveAim() {
-        const params = { age: this.selectedAge };
+        const params = {
+            age: this.selectedAge,
+            SpendCapital: this.spendCapital,
+            CalcWithInflation: this.isInflationSelected,
+            SpendTillAge: this.selectedLiveAge,
+        };
         var saveRes = saveAim(params);
         return saveRes;
 
+    }
+
+    @action
+    toggleUseInflation() {
+        this.isInflationSelected = !this.isInflationSelected;
+        this.updateByAge(this.selectedAge);
     }
 
 

@@ -14,7 +14,6 @@ export class TargetWidget extends React.Component {
     }
 
     getAgeEnding = (age) => {
-        debugger;
         if (age) {
             var ageStr = age.toString();
             if (ageStr.endsWith(1))

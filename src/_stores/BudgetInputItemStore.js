@@ -1,7 +1,7 @@
 import BSMobxStore from 'bs_react_lib/stores/BSMobxStore2';
 import bsAjaxMethod from 'bs_react_lib/utils/bsAjaxMethod';
 
-import { observable, action, toJS, computed } from 'mobx';
+import { observable, action, toJS, computed, reaction } from 'mobx';
 import { ajaxReq } from '_services/WebApi';
 
 export const getBudgetItemById = (params) => {
@@ -31,7 +31,13 @@ export default class BudgetInputItemStore extends BSMobxStore {
         super({
             // action: getIncomeTypes,
         });
+        this.errors = {
+            amount: '',
+        }       
     }
+
+    @observable
+    datas = {}
 
     @observable
     label = '';
@@ -61,19 +67,30 @@ export default class BudgetInputItemStore extends BSMobxStore {
     hasDatesBorders = false;
 
     @observable
-    budgetDirection = 0
+    budgetDirection = 0;
 
     @observable
     id = 0;
 
+    @observable
+    errors = {};
+
     @computed
     get canFillDates() {
-        debugger;
         const can = this.regularityId > 1;
         return can;
     }
 
+    @computed
+    get canSave() {
+        return this.selectedTypeId > 0;
+    }
+
+    @action
     saveItem() {
+        var validationRes = this.validate();
+        if (validationRes === false)
+            return false;
         const param = {
             Label: this.label,
             Amount: this.amount,
@@ -95,6 +112,65 @@ export default class BudgetInputItemStore extends BSMobxStore {
         return saveRes;
     }
 
+    validate = () => {
+        if (this.canSave !== true)
+            return false;
+        var isValid = true;
+        if (!this.amount) {
+            this.errors['amount'] = "Обязательно для заполнения";
+            isValid = false;
+        }
+        // else {
+        //     this.errors['amount'] = "";
+        // }
+        if ((this.regularityId == 5 || this.regularityId == 1) && !this.eventDate) {
+            this.errors['eventDateMonth'] = "Выберите месяц";
+            isValid = false;
+        }
+        // else {
+        //     this.errors['eventDateMonth'] = "";
+        // }
+        if (this.regularityId == 1 && !this.eventDate) {
+            this.errors['eventDateDay'] = "Выберите дату";
+            isValid = false;
+        }
+        // else {
+        //     this.errors['eventDateDay'] = "";
+        // }
+
+        if (!this.regularityId || this.regularityId===0 ){
+            this.errors['regularityId'] = "Выберите регулярность";
+            isValid = false;
+        }
+        // else{
+        //     this.errors['regularityId'] = "";
+        // }
+
+      
+        this.setValidationReactions();
+        return isValid;
+
+    }
+
+    @action
+    setValidationReactions(){
+        reaction(() => this.regularityId, () => {
+            this.eventDate = "";
+            this.errors["eventDateDay"] = "";
+            this.errors["eventDateMonth"] = "";
+        });
+        reaction(() => this.eventDate, () => {
+            this.errors["eventDateDay"] = "";
+            this.errors["eventDateMonth"] = "";
+        });
+        reaction(() => this.amount, () => {
+            this.errors["amount"] = "";
+        });
+        reaction(() => this.regularityId, () => {
+            this.errors["regularityId"] = "";
+        });
+    }
+
     @action
     loadItem(id) {
         const params = {
@@ -111,18 +187,19 @@ export default class BudgetInputItemStore extends BSMobxStore {
 
     @action
     fillItem = (data) => {
-        debugger;
         this.label = data.Label;
+        this.datas.amount = data.Amount;
         this.amount = data.Amount;
         this.selectedTypeId = data.BudgetTypeId;
-        this.eventDate = data.EventDate;
+        this.regularityId = data.RegularityId;
+
         this.startDate = data.StartDate;
         this.endDate = data.EndDate;
-        this.regularityId = data.RegularityId;
         this.id = data.Id;
         this.budgetDirection = data.BudgetDirection;
         if (data.StartDate || data.EndDate)
             this.hasDatesBorders = true;
+        this.eventDate = data.EventDate;
+        this.setValidationReactions();
     }
-
 }

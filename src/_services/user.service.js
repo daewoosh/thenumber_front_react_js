@@ -43,7 +43,6 @@ function login(username, password) {
         onSuccessLogin(data);
     }).
         catch((err) => {
-            debugger;
             ErrorToast(err);
         });
     return res;
@@ -51,7 +50,6 @@ function login(username, password) {
 
 function logout() {
     // remove user from local storage to log user out
-    debugger;
     remove('userData');
     remove(TOKEN_NAME);
 }
@@ -115,6 +113,5 @@ function loginSocial(provider) {
 export const isLogin = () => !!get(TOKEN_NAME) && !!get('userData');
 export const isProfileFilled = () => {
     var data = get('userData');
-    debugger;
     return data.IsProfileFilled;
 }

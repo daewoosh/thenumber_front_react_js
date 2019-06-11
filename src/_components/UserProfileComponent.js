@@ -49,7 +49,6 @@ export class UserProfileComponent extends React.Component {
     }
 
     onUserSelectionChange(e, propName) {
-        debugger;
         this.userStore.userFullInfo[propName] = e.value;
     }
 
@@ -58,7 +57,6 @@ export class UserProfileComponent extends React.Component {
     }
 
     onChildSelectionChange(e, propName, index) {
-        debugger;
         this.userStore.updateChild(index, propName, e.value);
     }
 

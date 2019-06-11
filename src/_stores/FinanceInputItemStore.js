@@ -56,7 +56,24 @@ export default class FinanceInputItemStore extends BSMobxStore {
     additionalFields = []
 
     @observable
+    label = "";
+
+    @observable
+    labelError = "";
+
+    @observable
+    subTypeUniqueCode = "";
+
+    @observable
     subTypeSelected = false;
+
+    @observable
+    isReserve = false;
+
+    @computed
+    get canSave() {
+        return this.financeTypeId > 0 && this.financeSubTypeId > 0;
+    }
 
     @action
     updateFinanceSubTypes = () => {
@@ -64,7 +81,7 @@ export default class FinanceInputItemStore extends BSMobxStore {
         financeStore.loadFinanceSubTypes(this.financeTypeId);
         this.financeSubTypeId = false;
         this.subTypeSelected = false;
-        
+
     }
 
     @action
@@ -75,11 +92,18 @@ export default class FinanceInputItemStore extends BSMobxStore {
 
     @action
     saveItem() {
+        var validationRes = this.validate();
+        if (validationRes === false)
+            return false;
+
         const param = {
             Id: this.id,
             FinanceSubTypeId: this.financeSubTypeId,
             AdditionalFields: this.additionalFields,
             amount: this.amount,
+            Label: this.label,
+            UniqueCode: this.subTypeUniqueCode,
+            IsReserve: this.isReserve,
         }
         var saveRes = saveFinanceItem(param);
         // saveRes.then((data) => {
@@ -88,11 +112,36 @@ export default class FinanceInputItemStore extends BSMobxStore {
         return saveRes;
     }
 
+    validate = () => {
+        if (this.canSave !== true)
+            return false;
+        var isValid = true;
+        if (!this.label) {
+            isValid = false;
+            this.labelError = "Обязательное поле";
+        }
+        for (var i = 0; i < this.additionalFields.length; i++) {
+            var item = this.additionalFields[i];
+            if (this.additionalFields[i].UniqueCode == "$F_L4_AMOUNT" && !this.additionalFields[i].Value) {
+                this.additionalFields[i].error = "Обязательное поле";
+                isValid = false;
+            }
+            if (this.additionalFields[i].UniqueCode == "$F_L4_PERCENT" && !this.additionalFields[i].Value) {
+                this.additionalFields[i].error = "Обязательное поле";
+                isValid = false;
+            }
+            if (this.additionalFields[i].UniqueCode == "$F_L4_OPEN_DATE" && !this.additionalFields[i].Value) {
+                this.additionalFields[i].error = "Обязательное поле";
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
+
     @action
     loadAdditionalFields(id) {
         if (id > 0) {
             const param = { FinanceSubTypeId: id };
-            debugger;
             if (this.id != '0')
                 param.FinanceId = this.id;
             var getRes = getAdditionalFields(param);
@@ -129,6 +178,7 @@ export default class FinanceInputItemStore extends BSMobxStore {
         var copy = toJS(this.additionalFields);
         const objIndex = copy.findIndex((obj => obj.Id == id));
         copy[objIndex].Value = value;
+        copy[objIndex].error = "";//при смене значения в доп полне снимаем ошибку на нем
         this.additionalFields.replace(copy);
     }
 
@@ -142,13 +192,15 @@ export default class FinanceInputItemStore extends BSMobxStore {
     }
 
     fillItem = (data) => {
-        debugger;
         this.id = data.Id;
         this.financeGlobalTypeId = data.FinanceGlobalTypeId;
         this.financeTypeId = data.FinanceTypeId;
         this.amount = data.Amount;
         this.additionalFields = data.AdditionalFields;
         this.financeSubTypeId = data.FinanceSubTypeId;
+        this.label = data.Label;
+        this.subTypeUniqueCode = data.UniqueCode;
+        this.isReserve = data.IsReserve;
     }
 
     @action

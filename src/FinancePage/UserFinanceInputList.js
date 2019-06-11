@@ -10,8 +10,9 @@ export class UserFinanceInputListItem extends React.Component {
     }
 
     render() {
-        const { type, Amount, IconType, TypeName, Id } = this.props;
+        const { type, Amount, IconType, TypeName, Id, Label } = this.props;
         debugger;
+        const hasLabel = !(!Label || /^\s*$/.test(Label));
         const isFilled = Amount !== null;
         let iconPath = '';
         const baseImgPath = 'assets/img';
@@ -28,8 +29,13 @@ export class UserFinanceInputListItem extends React.Component {
                     </div>
                     <div className="list-item-title-container">
                         <div className="list-item-title">
-                            {this.props.FinanceTypeDescription}
+                            {Label || this.props.FinanceTypeDescription}
                         </div>
+                        <HideComponent isHide={hasLabel === false}>
+                            <div className="list-item-type-name">
+                                {this.props.FinanceTypeDescription}
+                            </div>
+                        </HideComponent>
                     </div>
                     <div className="list-item-title_sub">
                         {this.props.FinanceSubTypeDescription.substring(0, 15)}
@@ -87,12 +93,12 @@ export class UserFinanceInputList extends React.Component {
         return (
             <div className="items-list">
                 {items.map((el, index) => {
-                    return <UserFinanceInputListItem  
-                                {...el} 
-                                onClick={(e) => this.props.onItemClick(el)} 
-                                onDeleteClick={(e) => this.handleHideClick(e, el)} 
-                                onFillClick={(e) => this.handleFillClick(e, el)} 
-                            />
+                    return <UserFinanceInputListItem
+                        {...el}
+                        onClick={(e) => this.props.onItemClick(el)}
+                        onDeleteClick={(e) => this.handleHideClick(e, el)}
+                        onFillClick={(e) => this.handleFillClick(e, el)}
+                    />
                 })}
             </div>
         );

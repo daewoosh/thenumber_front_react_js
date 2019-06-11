@@ -5,23 +5,26 @@ import HideComponent from 'bs_react_lib/components/HideComponent';
 import { RoundIcon } from '../_components/SvgIcon';
 import { has } from 'mobx';
 
+const dateRange = (startDate, endDate) => {
+    if (startDate === null && endDate === null)
+        return null;
+    if (startDate && endDate)
+        return `${startDate} - ${endDate}`;
+    if (startDate && endDate === null)
+        return `c ${startDate}`;
+    if (endDate && startDate === null)
+        return `до ${endDate}`;
+}
+
 export class UserInputListItem extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        const { type, Amount, fromDate, toDate, IconType, TypeName, Id, Label } = this.props;
-        const isFilled = Amount !== null;
-        let iconPath = '';
-        const baseImgPath = 'assets/img';
-        const notShowDash = fromDate === null || toDate === null;
-        const hasLabel = !(!Label || /^\s*$/.test(Label));
-        debugger;
-        if (isFilled)
-            iconPath = `${baseImgPath}/${IconType}_filled.svg`
-        else
-            iconPath = `${baseImgPath}/${IconType}_empty.svg`
+        const { type, Amount, StartDate, EndDate, IconType, TypeName, Id, Label, DisplayStartDate, DisplayEndDate,Regularity } = this.props;
+        const isFilled = Amount !== null;            
+        const hasLabel = !(!Label || /^\s*$/.test(Label));     
         return (
             <div className="user-input-list-item" onClick={this.props.onClick}>
                 <div className="list-item-left">
@@ -42,13 +45,14 @@ export class UserInputListItem extends React.Component {
                 <HideComponent isHide={!isFilled} >
                     <div className="list-item-right">
                         <div className="list-item-input-value">
-                            <NumberFormat value={this.props.Amount} displayType={'text'} thousandSeparator={' '} suffix=' &#8381;'/>
+                            <NumberFormat value={Amount} displayType={'text'} thousandSeparator={' '} suffix=' &#8381;' />
                         </div>
                         <div className="input-value-date">
-                            {this.props.date}
+                            {Regularity}
                         </div>
                         <div className="input-value-date-range">
-                            {this.props.fromDate} {notShowDash && <span>-</span>} {this.props.toDate}
+                            {/* {DisplayStartDate} {notShowDash && <span>-</span>} {DisplayEndDate} */}
+                            {dateRange(DisplayStartDate, DisplayEndDate)}
                         </div>
                     </div>
                 </HideComponent>
@@ -73,7 +77,6 @@ export class UserInputList extends React.Component {
     }
 
     handleHideClick = (e, el) => {
-        debugger;
         e.preventDefault();
         e.stopPropagation();
         this.props.onDeleteClick(el.Id, el.BudgetDirection);

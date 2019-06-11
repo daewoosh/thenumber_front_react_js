@@ -19,7 +19,7 @@ export class Report extends React.Component {
     }
 
     render() {
-        const { totalKapital, monthlyIncome, desiredIncome } = this.calcStore;
+        const { totalCapital, monthlyIncome, desiredIncome } = this.calcStore;
         const { agressivePercent, conservativePercent, moderatePercent } = this.calcStore;
         const { savedAgressiveInvestments, savedConservativeInvestments, savedModerateInvestments } = this.calcStore;
         const { periods } = this.calcStore;
@@ -85,19 +85,7 @@ export class Report extends React.Component {
                                 Header: "Month",
                                 accessor: "CurrentMonth",
                                 width: 80
-                            },
-                            {
-                                Header: () => (
-                                    <div>
-                                        <p> Первичное</p>
-                                        <p> накопление в</p>
-                                        <p> банке</p>
-                                    </div>
-                                ),
-                                accessor: d => <NumberFormat value={Math.round(d.BankSavingsAfterInvestments)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "BankSavingsAfterInvestments",
-                                width: 85
-                            },
+                            },                           
                             {
                                 Header: () => (
                                     <div>
@@ -106,18 +94,29 @@ export class Report extends React.Component {
                                         <p> недвижимости</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.ApartmentRentPeriodTotal)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "ApartmentRentPeriodTotal",
+                                accessor: d => <NumberFormat value={Math.round(d.ApartmentRent)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "ApartmentRent",
                                 width: 85
                             }
                             ,
                             {
-                                Header: "Бонусы",
-                                accessor: d => <NumberFormat value={Math.round(d.Bonuses)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "Bonuses",
+                                Header: "Зарплата",
+                                accessor: d => <NumberFormat value={Math.round(d.Salary)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "Salary",
                                 width: 85
                             }
                             ,
+                             {
+                                Header: () => (
+                                    <div>
+                                        <p>Получение</p>
+                                        <p>кредита</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.CreditRecieve)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "CreditRecieve",
+                                width: 85
+                            },
                             {
                                 Header: () => (
                                     <div>
@@ -133,17 +132,190 @@ export class Report extends React.Component {
                             {
                                 Header: () => (
                                     <div>
-                                        <p> Остаток в банке </p>
-                                        <p>после</p>
-                                        <p> инвестирования</p>
-                                        <p> и расходов</p>
+                                        <p>Отпуск</p>                                        
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.BankRest)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "BankRest",
+                                accessor: d => <NumberFormat value={Math.round(d.Vacation)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "Vacation",
                                 width: 85
                             }
                             ,
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p>Другие расходы</p>                                        
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.OtherExpences)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "OtherExpences",
+                                width: 85
+                            }
+                            ,
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p>Плетежи по кредиту</p>                                        
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.CreditPayments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "CreditPayments",
+                                width: 85
+                            }
+                            ,
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Депозитная </p>
+                                        <p>Ставка</p>
+                                        <p> годовых</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.BankDepositRatePercent)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "BankDepositRatePercent",
+                                width: 85
+                            }
+                            ,
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Инфляция </p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.InflationRatePercent)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "InflationRatePercent",
+                                width: 85
+                            }
+                            ,
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Остаток в банке </p>
+                                        <p>после</p>
+                                        <p> расходов</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.BankRestAfterExpences)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "BankRestAfterExpences",
+                                width: 85
+                            }
+                            ,
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> платеж </p>
+                                        <p>В резервный</p>
+                                        <p> фонд</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.ReserveFundPayment)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "ReserveFundPayment",
+                                width: 85
+                            },
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Ивест.в конс. </p>
+                                        <p>инструменты</p>
+                                        <p> поступления</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.SaleConservativeInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "SaleConservativeInvestments",
+                                width: 85
+                            },
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Ивест.в умер. </p>
+                                        <p>инструменты</p>
+                                        <p> поступления</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.SaleModerateInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "SaleModerateInvestments",
+                                width: 85
+                            },
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Ивест.в агр. </p>
+                                        <p>инструменты</p>
+                                        <p> поступления</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.SaleAgressiveInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "SaleAgressiveInvestments",
+                                width: 85
+                            },
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Ивест.в конс. </p>
+                                        <p>инструменты</p>
+                                        <p> платежи</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.ConservativeInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "ConservativeInvestments",
+                                width: 85
+                            },
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Ивест.в умер. </p>
+                                        <p>инструменты</p>
+                                        <p> платежи</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.ModerateInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "ModerateInvestments",
+                                width: 85
+                            },
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> Ивест.в агр. </p>
+                                        <p>инструменты</p>
+                                        <p> платежи</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.AgressiveInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "AgressiveInvestments",
+                                width: 85
+                            },
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> отсаток </p>
+                                        <p>в банке</p>
+                                        <p> на конец м.</p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.BankRestAtMonthEnd)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "BankRestAtMonthEnd",
+                                width: 85
+                            },
+
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> РЕЗЕРВ </p>
+                                    </div>
+                                ),
+                                accessor: d => <NumberFormat value={Math.round(d.ReserveFundTotalGrow)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "ReserveFundTotalGrow",
+                                width: 85
+                            },
+
                             {
                                 Header: () => (
                                     <div>
@@ -189,105 +361,100 @@ export class Report extends React.Component {
                                         <p> КАПИТАЛ</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.Kapital)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "Kapital",
+                                accessor: d => <NumberFormat value={Math.round(d.Capital)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "Сapital",
                                 width: 85
-                            }
-                            ,
+                            },
                             {
                                 Header: () => (
                                     <div>
-                                        <p>Инвестирование </p>
-                                        <p>в консервативные</p>
-                                        <p> инструменты</p>
+                                        <p> КАПИТАЛ</p>
+                                        <p> с инфл.</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.ConservativeInvestmentAmount)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "ConservativeInvestmentAmount",
+                                accessor: d => <NumberFormat value={Math.round(d.CapitalWithInflation)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "CapitalWithInflation",
                                 width: 85
-                            }
-                            ,
+                            },
                             {
                                 Header: () => (
                                     <div>
-                                        <p>Инвестирование </p>
-                                        <p>в умеренные</p>
-                                        <p> инструменты</p>
+                                        <p> средства</p>
+                                        <p> доступные для</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.ModerateInvestmentAmount)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "ModerateInvestmentAmount",
+                                accessor: d => <NumberFormat value={Math.round(d.FundsFreeForInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "FundsFreeForInvestments",
                                 width: 85
-                            }
-                            ,
+                            },
                             {
                                 Header: () => (
                                     <div>
-                                        <p>Инвестирование </p>
-                                        <p>в агрессивные</p>
-                                        <p> инструменты</p>
+                                        <p> капитал</p>
+                                        <p> до инвест.</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.AgressiveInvestmentAmount)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "AgressiveInvestmentAmount",
+                                accessor: d => <NumberFormat value={Math.round(d.CapitalBeforeInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "CapitalBeforeInvestments",
                                 width: 85
-                            }
-                            ,
-                            {
-                                Header: () => (
-                                    <div>
-                                        <p> Отпуск</p>
-                                    </div>
-                                ),
-                                accessor: d => <NumberFormat value={Math.round(d.Vacation)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "Vacation",
-                                width: 85
-                            }
-                            ,
-                            {
-                                Header: () => (
-                                    <div>
-                                        <p>Другие </p>
-                                        <p>планоые</p>
-                                        <p>расходы</p>
-                                    </div>
-                                ),
-                                accessor: d => <NumberFormat value={Math.round(d.OtherPlannedExpence)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "OtherPlannedExpence",
-                                width: 85
-                            }
-                            , {
-                                Header: () => (
-                                    <div>
-                                        <p>Ежегодные  </p>
-                                        <p>расходы</p>
+                            },
 
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p> капитал</p>
+                                        <p> после инвест.</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Math.round(d.AnnualExpence)} displayType={'text'} thousandSeparator={' '} />,
-                                id: "AnnualExpence",
+                                accessor: d => <NumberFormat value={Math.round(d.CapitalAfterInvestments)} displayType={'text'} thousandSeparator={' '} />,
+                                id: "CapitalAfterInvestments",
+                                width: 85
+                            },
+                            {
+                                Header: () => (
+                                    <div>
+                                        <p>Доля</p>
+                                        <p>консервативных</p>
+                                        <p>факт.</p>
+                                    </div>
+                                ),
+                                accessor: d => Math.round(d.ActualConservativeSpreadPercent * 100) + '%',
+                                id: "ActualConservativeSpreadPercent",
                                 width: 85
                             }
                             , {
                                 Header: () => (
                                     <div>
-                                        <p>платежи по </p>
-                                        <p> кредиту</p>
+                                        <p>Доля </p>
+                                        <p>умеренных</p>
+                                        <p>факт.</p>
                                     </div>
                                 ),
-                                accessor: d => <NumberFormat value={Number((d.CreditPayment).toFixed(2))} displayType={'text'} thousandSeparator={' '} />,
-                                id: "CreditPayment",
+                                accessor: d => Math.round(d.ActualModerateSpreadPercent * 100) + '%',
+                                id: "ActualModerateSpreadPercent",
                                 width: 85
                             }
                             , {
+                                Header: () => (
+                                    <div>
+                                        <p>Доля </p>
+                                        <p> агрессивных</p>
+                                        <p>факт.</p>
+                                    </div>
+                                ),
+                                accessor: d => Math.round(d.ActualAgressiveSpreadPercent * 100) + '%',
+                                id: "ActualAgressiveSpreadPercent",
+                                width: 85
+                            },
+                          {
                                 Header: () => (
                                     <div>
                                         <p>Доля</p>
                                         <p>консервативных</p>
                                     </div>
                                 ),
-                                accessor: d => Math.round(d.ConservativeNormative * 100) + '%',
-                                id: "ConservativeNormative",
+                                accessor: d => Math.round(d.TargetConservateSpreadPercent * 100) + '%',
+                                id: "TargetConservateSpreadPercent",
                                 width: 85
                             }
                             , {
@@ -297,8 +464,8 @@ export class Report extends React.Component {
                                         <p>умеренных</p>
                                     </div>
                                 ),
-                                accessor: d => Math.round(d.ModerateNormative * 100) + '%',
-                                id: "ModerateNormative",
+                                accessor: d => Math.round(d.TargetModerateSpreadPercent * 100) + '%',
+                                id: "TargetModerateSpreadPercent",
                                 width: 85
                             }
                             , {
@@ -308,14 +475,14 @@ export class Report extends React.Component {
                                         <p> агрессивных</p>
                                     </div>
                                 ),
-                                accessor: d => Math.round(d.AgressiveNormative * 100) + '%',
-                                id: "AgressiveNormative",
+                                accessor: d => Math.round(d.TargetAgressiveSpreadPercent * 100) + '%',
+                                id: "TargetAgressiveSpreadPercent",
                                 width: 85
                             }
                         ]
                     }
                 />
-                <p>Капитал всего <NumberFormat value={Math.round(totalKapital)} displayType={'text'} thousandSeparator={' '} />  </p>
+                <p>Капитал всего <NumberFormat value={Math.round(totalCapital)} displayType={'text'} thousandSeparator={' '} />  </p>
                 <p>Ежемесячный доход  <NumberFormat value={Math.round(monthlyIncome)} displayType={'text'} thousandSeparator={' '} /> </p>
                 <p>Желаемый ежемесячный доход  <NumberFormat value={Math.round(desiredIncome)} displayType={'text'} thousandSeparator={' '} /> </p>
 

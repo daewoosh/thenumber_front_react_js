@@ -3,6 +3,48 @@ import NumberFormat from 'react-number-format';
 import { RoundIcon } from '../_components/SvgIcon';
 
 
+class ListItem extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        const { prev, current, iconType, name } = this.props;
+        return (
+            <div className="user-input-list-item">
+                <div className="list-item-left">
+                    <div className="list-item-icon">
+                        <RoundIcon type={iconType} filled={true} />
+                    </div>
+                    <div className="list-item-title-container">
+                        <div className="list-item-title">
+                            {name}
+                        </div>
+                    </div>
+                </div>
+                <div className="list-item-right">
+                    <div>
+                        <NumberFormat
+                            value={Math.round(prev)}
+                            thousandSeparator=' '
+                            displayType={'text'}
+                            suffix=' &#8381;'
+                        />
+                    </div>
+                    <div>
+                        <NumberFormat
+                            value={Math.round(current)}
+                            thousandSeparator=' '
+                            displayType={'text'}
+                            suffix=' &#8381;'
+                        />
+                    </div>
+                    <div>{this.props.calcPercent(current, prev)}</div>
+                </div>
+            </div>
+        );
+    }
+}
+
 class InvestmentPlanComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -10,10 +52,10 @@ class InvestmentPlanComponent extends React.Component {
     }
     calcPercent = (curr, prev) => {
         let persent;
-        if (prev !== 0 ) {
-            persent = Math.round(((curr/prev)-1)*100);
+        if (prev !== 0) {
+            persent = Math.round(((curr / prev) - 1) * 100);
 
-            return  <span>{persent>0 && '+'}{persent}%</span>;
+            return <span>{persent > 0 && '+'}{persent}%</span>;
         } else return null
     }
     render() {
@@ -29,80 +71,40 @@ class InvestmentPlanComponent extends React.Component {
             SavedConservativeInvestments,
             SavedAgressiveInvestments,
         } = this.store.selectedPeriod;
-        const prevTotal = prevInvestmentAmount+prevModerateAmount+prevConservativeAmount+prevAgressiveAmount;
-        const savedTotal = TotalInvestments+SavedModerateInvestments+SavedConservativeInvestments+SavedAgressiveInvestments;
+        const prevTotal = prevInvestmentAmount + prevModerateAmount + prevConservativeAmount + prevAgressiveAmount;
+        const savedTotal = TotalInvestments + SavedModerateInvestments + SavedConservativeInvestments + SavedAgressiveInvestments;
         return (
             <div className="user-plans-container">
                 <h5>Инвестиционный план на год</h5>
                 <div className="user-plans-list items-list">
-                    <div className="user-input-list-item">
-                        <div className="list-item-left">
-                            <div className="list-item-icon">
-                                <RoundIcon type={'building'} filled={true} />
-                            </div>
-                            <div className="list-item-title-container">
-                                <div className="list-item-title">
-                                    Вклад
-                                </div>
-                            </div>
-                        </div>
-                        <div className="list-item-right">
-                            <div>{Math.round(prevInvestmentAmount)}&#8381;</div>
-                            <div>{Math.round(TotalInvestments)}&#8381;</div>
-                            <div>{this.calcPercent(TotalInvestments,prevInvestmentAmount)}</div>
-                        </div>
-                    </div>
-                    <div className="user-input-list-item">
-                        <div className="list-item-left">
-                            <div className="list-item-icon">
-                                <RoundIcon type={'dollar'} filled={true} />
-                            </div>
-                            <div className="list-item-title-container">
-                                <div className="list-item-title">
-                                    Уверенно
-                                </div>
-                            </div>
-                        </div>
-                        <div className="list-item-right">
-                            <div>{Math.round(prevModerateAmount)}&#8381;</div>
-                            <div>{Math.round(SavedModerateInvestments)}&#8381;</div>
-                            <div>{this.calcPercent(SavedModerateInvestments,prevModerateAmount)}</div>
-                        </div>
-                    </div>
-                    <div className="user-input-list-item">
-                        <div className="list-item-left">
-                            <div className="list-item-icon">
-                                <RoundIcon type={'house'} filled={true} />
-                            </div>
-                            <div className="list-item-title-container">
-                                <div className="list-item-title">
-                                    Консервативно
-                                </div>
-                            </div>
-                        </div>
-                        <div className="list-item-right">
-                            <div>{Math.round(prevConservativeAmount)}&#8381;</div>
-                            <div>{Math.round(SavedConservativeInvestments)}&#8381;</div>
-                            <div>{this.calcPercent(SavedConservativeInvestments,prevConservativeAmount)}</div>
-                        </div>
-                    </div>
-                    <div className="user-input-list-item">
-                        <div className="list-item-left">
-                            <div className="list-item-icon">
-                                <RoundIcon type={'car'} filled={true} />
-                            </div>
-                            <div className="list-item-title-container">
-                                <div className="list-item-title">
-                                    Агрессивно
-                                </div>
-                            </div>
-                        </div>
-                        <div className="list-item-right">
-                            <div>{Math.round(prevAgressiveAmount)}&#8381;</div>
-                            <div>{Math.round(SavedAgressiveInvestments)}&#8381;</div>
-                            <div>{this.calcPercent(SavedAgressiveInvestments,prevAgressiveAmount)}</div>
-                        </div>
-                    </div>
+                    <ListItem
+                        iconType='building'
+                        name='Вклад'
+                        prev={prevInvestmentAmount}
+                        current={TotalInvestments}
+                        calcPercent = {this.calcPercent}
+                    />
+                    <ListItem
+                        iconType='dollar'
+                        name='Уверенно'
+                        prev={prevModerateAmount}
+                        current={SavedModerateInvestments}
+                        calcPercent = {this.calcPercent}
+                    />
+                    <ListItem
+                        iconType='house'
+                        name='Консервативно'
+                        prev={prevConservativeAmount}
+                        current={SavedConservativeInvestments}
+                        calcPercent = {this.calcPercent}
+                    />
+                    <ListItem
+                        iconType='car'
+                        name='Агрессивно'
+                        prev={prevAgressiveAmount}
+                        current={SavedAgressiveInvestments}
+                        calcPercent = {this.calcPercent}
+                    />
                     <div className="user-input-list-item _total">
                         <div className="list-item-left">
                             <div className="list-item-title-container">
@@ -112,13 +114,27 @@ class InvestmentPlanComponent extends React.Component {
                             </div>
                         </div>
                         <div className="list-item-right">
-                            <div>{Math.round(prevTotal)}&#8381;</div>
-                            <div>{Math.round(savedTotal)}&#8381;</div>
-                            <div>{this.calcPercent(savedTotal,prevTotal)}</div>
+                            <div>
+                                <NumberFormat
+                                    value={Math.round(prevTotal)}
+                                    thousandSeparator=' '
+                                    displayType={'text'}
+                                    suffix=' &#8381;'
+                                />
+                            </div>
+                            <div>
+                                <NumberFormat
+                                    value={Math.round(savedTotal)}
+                                    thousandSeparator=' '
+                                    displayType={'text'}
+                                    suffix=' &#8381;'
+                                />
+                            </div>
+                            <div>{this.calcPercent(savedTotal, prevTotal)}</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 }

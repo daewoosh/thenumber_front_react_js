@@ -20,6 +20,8 @@ export class BudgetComponent extends React.Component {
     }
 
     componentDidMount() {
+        this.budgetStore.loadIncomeItems();
+        this.budgetStore.loadExpenceItems();
         this.budgetStore.loadIncomeTypes();
         this.budgetStore.loadExpenceTypes();
     }
@@ -68,11 +70,12 @@ export class BudgetComponent extends React.Component {
 
     onSaveClick = () => {
         var saveItemRes = this.budgetItemStore.saveItem();
-        saveItemRes.then(() => {
-            this.budgetStore.loadIncomeItems();
-            this.budgetStore.loadExpenceItems()
-            this.handleClose();
-        });
+        if (saveItemRes !== false)
+            saveItemRes.then(() => {
+                this.budgetStore.loadIncomeItems();
+                this.budgetStore.loadExpenceItems()
+                this.handleClose();
+            });
         //почему то не работает если вызывать через if
         //TODO оптимизировать
         // let savedItem = this.mapItemStoreToProps();
@@ -92,6 +95,7 @@ export class BudgetComponent extends React.Component {
                 this.handleClose();
             this.budgetStore.loadIncomeItems();
             this.budgetStore.loadExpenceItems();
+
         });
 
     }
@@ -101,7 +105,7 @@ export class BudgetComponent extends React.Component {
         this.budgetItemStore.regularityId = value.value;
     }
 
-    onMonthsChange = (value)=>{
+    onMonthsChange = (value) => {
         this.budgetItemStore.eventDate = value.value;
     }
 
@@ -116,7 +120,7 @@ export class BudgetComponent extends React.Component {
     }
 
     mapItemStoreToProps = () => {
-        const { label, selectedTypeId, amount, regularityId, eventDate, startDate, endDate, id, canFillDates, hasDatesBorders, budgetDirection } = this.budgetItemStore;
+        const { label, selectedTypeId, amount, regularityId, eventDate, startDate, endDate, id, canFillDates, hasDatesBorders, budgetDirection, errors, canSave } = this.budgetItemStore;
         const selectedItem = {
             label: label,
             selectedTypeId: selectedTypeId,
@@ -128,14 +132,16 @@ export class BudgetComponent extends React.Component {
             id: id,
             canFillDates: canFillDates,
             hasDatesBorders: hasDatesBorders,
-            budgetDirection: budgetDirection
+            budgetDirection: budgetDirection,
+            errors: errors,
+            canSave: canSave,
         };
         return selectedItem;
     }
 
     render() {
         const { expenceItems, incomeItems, showModalForm, modalFormMode, currentTypes, modalTitle } = this.budgetStore;
-        const selectedItem = this.mapItemStoreToProps();
+        const selectedItem = this.budgetItemStore;
         return (
             <div className="base-panel">
                 <div className="base-panel-content">
@@ -155,9 +161,9 @@ export class BudgetComponent extends React.Component {
                         onDeleteClick={this.onDeleteClick}
                         buttonText='Добавить'
                         onItemClick={this.onItemClick}
-                        emptyText='Укажите входящие денежные доходы, как постоянные - зарплата или сдача в аренду, так и периодические - премии, возврат долга, дивиденды.' 
-                        tooltipText = 'Зарплата и другие источники доходов'
-                        />
+                        emptyText='Укажите входящие денежные доходы, как постоянные - зарплата или сдача в аренду, так и периодические - премии, возврат долга, дивиденды.'
+                        tooltipText='Зарплата и другие источники доходов'
+                    />
                     <PanelSection
                         handleHideModal={this.handleClose}
                         title="Расходы"
@@ -168,7 +174,7 @@ export class BudgetComponent extends React.Component {
                         onDeleteClick={this.onDeleteClick}
                         emptyText='Укажите все ваши текущие расходы - ежемесячные траты, аренда квартиры и периодические - отпуск, страховка, налоги, обучение.'
                         tooltipText='Все ваши текущие и планируемые траты'
-                        />
+                    />
                 </div>
                 <Modal show={showModalForm} onHide={this.handleClose} dialogClassName="custom-modal">
                     <Modal.Body>
@@ -185,8 +191,8 @@ export class BudgetComponent extends React.Component {
                             onRegularityChange={(el) => this.onRegularityChange(el)}
                             onHasDatesBordersChange={this.onHasDatesBordersChange}
                             onEventDateChange={this.onEventDateChange}
-                            onDeleteClick={this.onDeleteClick} 
-                            onMonthsChange = {this.onMonthsChange}/>
+                            onDeleteClick={this.onDeleteClick}
+                            onMonthsChange={this.onMonthsChange} />
                     </Modal.Body>
                 </Modal>
             </div>

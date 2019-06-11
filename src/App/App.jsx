@@ -1,5 +1,6 @@
 import React from 'react';
-import { Router, Route, HashRouter, Link, Redirect } from 'react-router-dom';
+import { Router, Route, HashRouter, Link, Redirect, Switch } from 'react-router-dom';
+import { IndexRoute } from 'react-router'
 import { connect } from 'react-redux';
 import { Header } from '../_components';
 import { Footer } from '../_components';
@@ -9,7 +10,7 @@ import PrivateRoute from '../_components/PrivateRoute';
 import { HomePage } from '../HomePage';
 import { LoginPage, AuthSuccess } from '../LoginPage';
 import { RegisterPage, EmailConfirmation } from '../RegisterPage';
-import { PasswordRecoveryPage,NewPasswordPage } from '../PasswordRecoveryPage';
+import { PasswordRecoveryPage, NewPasswordPage } from '../PasswordRecoveryPage';
 import { UserProfilePage } from '../UserProfilePage';
 import { add, get, remove, clear } from '../_services/DataService';
 import { API_PATH, TOKEN_NAME } from '../_constants';
@@ -47,22 +48,26 @@ export class App extends React.Component {
                 <Header />
                 <HashRouter>
                     <div className="content">
-                        <Redirect exact from="/" to="/home" />
-                        <PrivateRoute exact path="/home" component={Dashboard} />
-                        <Route path="/login" component={LoginPage} />
-                        <Route path="/register" component={RegisterPage} />
-                        <Route path="/confrimEmail/:token"
-                            component={EmailConfirmation} />
-                        <Route path="/newPassword/:token"
-                            component={NewPasswordPage} />
-                        <Route path="/socialauth" component={AuthSuccess} />
-                        <Route path="/recovery" component={PasswordRecoveryPage} />
-                        <PrivateRoute path="/profile" component={UserProfilePage} />
-                        <PrivateRoute path="/old" component={HomePage} />
-                        <PrivateRoute path="/finance" component={FinancePage} />
-                        <PrivateRoute path="/budget" component={BudgetPage} />
-                        <PrivateRoute path="/aims" component={UserAimsPage} />
-                        <Route path="/startWizard" component={StartWizardPage} />
+                        {/* <Redirect exact from="/" to="/home" /> */}
+                        {/* <IndexRoute component={Dashboard} /> */}
+                        <Switch>
+                            <PrivateRoute exact path="/" component={Dashboard} />
+                            <PrivateRoute exact path="/home" component={Dashboard} />
+                            <Route path="/login" component={LoginPage} />
+                            <Route path="/register" component={RegisterPage} />
+                            <Route path="/confrimEmail/:token"
+                                component={EmailConfirmation} />
+                            <Route path="/newPassword/:token"
+                                component={NewPasswordPage} />
+                            <Route path="/socialauth" component={AuthSuccess} />
+                            <Route path="/recovery" component={PasswordRecoveryPage} />
+                            <PrivateRoute path="/profile" component={UserProfilePage} />
+                            <PrivateRoute path="/old" component={HomePage} />
+                            <PrivateRoute path="/finance" component={FinancePage} />
+                            <PrivateRoute path="/budget" component={BudgetPage} />
+                            <PrivateRoute path="/aims" component={UserAimsPage} />
+                            <Route path="/startWizard" component={StartWizardPage} />
+                        </Switch>
                     </div>
                 </HashRouter>
                 <Footer />

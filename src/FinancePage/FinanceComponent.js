@@ -10,6 +10,8 @@ import FinanceInputStore from '../_stores/FinanceInputStore';
 import { FinanceInputForm } from '../_components/UserInputForm/FinanceInputForm'
 import { getComp } from '../bs_react_lib/utils/bsDI';
 import NumberFormat from 'react-number-format';
+import { debug } from 'util';
+import { ErrorToast } from '../_components/Notification';
 
 
 @observer
@@ -22,8 +24,8 @@ export class FinanceComponent extends React.Component {
     }
 
     componentDidMount() {
-        // this.financeStore.loadActiveItems();
-        // this.financeStore.loadPassiveItems();
+        this.financeStore.loadActiveItems();
+        this.financeStore.loadPassiveItems();
         this.financeStore.getActiveTypes();
         this.financeStore.getPassiveTypes();
     }
@@ -38,6 +40,7 @@ export class FinanceComponent extends React.Component {
         this.financeStore.setFinanceTypesList(type);
         this.financeInputItemStore = new FinanceInputItemStore();
         this.financeStore.modalFormMode = 'create';
+        this.financeStore.currentSubTypes = [];
         this.financeStore.toggleShowModal();
         this.financeInputItemStore.financeGlobalTypeId = type;
     }
@@ -55,9 +58,9 @@ export class FinanceComponent extends React.Component {
         this.financeInputItemStore.financeSubTypeId = 0;
     }
 
-    handleSubTypeChange = (id) => {
-        this.financeInputItemStore.financeSubTypeId = id.value;
-
+    handleSubTypeChange = (selectedValue) => {
+        this.financeInputItemStore.financeSubTypeId = selectedValue.value;
+        this.financeInputItemStore.subTypeUniqueCode = selectedValue.code;
     }
 
     handleAmountChange = (value) => {
@@ -65,19 +68,33 @@ export class FinanceComponent extends React.Component {
         this.financeInputItemStore.amount = value.value;
     }
 
+    handleLabelChange = (value) => {
+        debugger;
+        this.financeInputItemStore.label = value.target.value;
+        this.financeInputItemStore.labelError = null;
+    }
+
     handleAdditionalChange = (value, fieldType, id) => {
         debugger;
         this.financeInputItemStore.updateFieldValue(value, fieldType, id);
     }
 
+    handleReserveSelectionChange = () => {
+        debugger;
+        this.financeInputItemStore.isReserve = !this.financeInputItemStore.isReserve;
+    }
+
     onSaveClick = () => {
         var saveItemRes = this.financeInputItemStore.saveItem();
-        saveItemRes.then(() => {
-            debugger;
-            this.financeStore.loadActiveItems();
-            this.financeStore.loadPassiveItems();
-            this.handleClose();
-        });
+        if (saveItemRes !== false)
+            saveItemRes.then(() => {
+                debugger;
+                this.financeStore.loadActiveItems();
+                this.financeStore.loadPassiveItems();
+                this.handleClose();
+            }).catch((err) => {
+                ErrorToast(err);
+            });
     }
 
     handleDeleteClick = (id) => {
@@ -126,7 +143,7 @@ export class FinanceComponent extends React.Component {
                     </div>
 
                     <div className="panel-information">
-                       Чтобы оценить ваше благосостояние, заполните информацию о вашем имуществе и обязательствах.
+                        Чтобы оценить ваше благосостояние, заполните информацию о вашем имуществе и обязательствах.
                     </div>
                     <FinancePanelSection
                         handleHideModal={this.handleClose}
@@ -137,7 +154,7 @@ export class FinanceComponent extends React.Component {
                         onAddClick={() => this.handleAddClick('1')}
                         onItemClick={this.handleItemClick}
                         total={activeSum}
-                        tooltipText = ''
+                        tooltipText='Работающие активы: Ваше имущество, вклады и инвестиции'
                     />
                     <FinancePanelSection
                         handleHideModal={this.handleClose}
@@ -174,6 +191,8 @@ export class FinanceComponent extends React.Component {
                             // onHasDatesBordersChange={this.onHasDatesBordersChange}
                             // onEventDateChange={this.onEventDateChange}
                             onDeleteClick={this.handleDeleteClick}
+                            handleLabelChange={this.handleLabelChange}
+                            onReserveSelectionChange={this.handleReserveSelectionChange}
                         />
                     </Modal.Body>
                 </Modal>

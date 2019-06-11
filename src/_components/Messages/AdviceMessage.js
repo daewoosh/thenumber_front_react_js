@@ -19,7 +19,7 @@ class AdviceMessage extends React.Component {
             <HideComponent isHide={this.state.show === false}>
                 <div className="app-message">
 
-                    <a onClick={this.handleClose} className="close-btn"><img src="./assets/img/close.svg" /></a>
+                    {/* <a onClick={this.handleClose} className="close-btn"><img src="./assets/img/close.svg" /></a> */}
                     <div className="app-message-content">
                         <img src="./assets/img/advice_filled.svg" />
                         <h6>Совет</h6>

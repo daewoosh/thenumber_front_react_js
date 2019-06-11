@@ -23,7 +23,12 @@ class ExpencesListItem extends React.Component {
                 </div>
                 <div className="list-item-right">
                     <div>{month}</div>
-                    <div>{amount}&#8381;</div>
+                    <div><NumberFormat
+                        value={amount}
+                        thousandSeparator=' '
+                        displayType={'text'}
+                        suffix=' &#8381;'
+                    /></div>
                 </div>
             </div>
         );

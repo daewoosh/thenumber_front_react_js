@@ -16,7 +16,7 @@ export class UserProfilePage extends React.Component {
 
     onSaveClick() {
         var saveRes = this.userStore.saveChanges();
-        saveRes.Then(() => { document.location.hash = '/home'; })
+        saveRes.then(() => { document.location.hash = '/home'; })
     }
 
     render() {

@@ -22,18 +22,15 @@ const monthOptions = [
 ];
 
 const getMonthSelectTemplate = ({ props }) => {
-    debugger;
     const answer = monthOptions.filter(item => item.value == props.question.Answer)[0];
     return <SelectList options={monthOptions} answer={answer} question={props.question} level2Id={props.level2Id} groupId={props.groupId} />
 };
 
 const getDecimalInputTemplate = ({ props }) => {
-    debugger;
     return <FormattedInput answer={props.question.Answer} separator={' '} question={props.question} level2Id={props.level2Id} groupId={props.groupId} decimalScale={2} />
 };
 
 const getYearInput = ({ props }) => {
-    debugger;
     return <FormattedInput answer={props.question.Answer} question={props.question}
         level2Id={props.level2Id}
         groupId={props.groupId}
@@ -135,7 +132,6 @@ export class SelectList extends React.Component {
 
     handleChange(chosenValue) {
         const { level2Id, groupId, question,options } = this.props;
-        debugger;
         // const value = moment(date).toISOString();
         const value = chosenValue === null ? null : chosenValue.value
         this.formStore.addAnswerToQuestion(level2Id, groupId, question.UniqueCode, value);
@@ -146,7 +142,6 @@ export class SelectList extends React.Component {
     }
 
     render() {
-        debugger;
         return (
             <Select
                 value={this.state.answer}

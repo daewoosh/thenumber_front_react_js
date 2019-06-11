@@ -46,7 +46,6 @@ function register(user) {
                 user => {
 
                     dispatch(success());
-                    debugger;
                     dispatch(alertActions.success(`Registration successful. Email was sent to ${user.Email}`));
                 },
                 error => {
@@ -67,7 +66,6 @@ function getInfo() {
         userService.getInfo()
             .then(
                 user => {
-                    debugger;
                     dispatch(success(user));
                 },
                 error => {

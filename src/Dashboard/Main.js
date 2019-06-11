@@ -7,21 +7,23 @@ import { getComp } from '../bs_react_lib/utils/bsDI';
 import { observer } from 'mobx-react';
 import HideComponent from 'bs_react_lib/components/HideComponent';
 import PeriodExpencesComponent from './PeriodExpencesComponent';
+import { RecommendationComponent } from '../_components/Recommendations/RecommendationsComponent';
 
 @observer
 export class Main extends React.Component {
     constructor(props) {
         super(props);
         this.reportStore = getComp('CalcStore');
+        this.recommendationStore = getComp('RecommendationStore');
     }
 
     selectOtherPeriod = (period) => {
-        debugger;
         this.reportStore.selectPeriod(period.CurrentYear);
     }
 
     render() {
         const { selectedPeriod, decemberPeriods, reportFilled } = this.reportStore;
+        const { recommendations } = this.recommendationStore;
         return (
             <Fragment>
                 <HideComponent isHide={reportFilled === true}>
@@ -46,13 +48,19 @@ export class Main extends React.Component {
                     <div className="variable-data">
                         <UserInfoWidget
                             age={selectedPeriod.CurrentAge}
-                            funds={selectedPeriod.Kapital}
+                            funds={selectedPeriod.Capital}
                             expense={selectedPeriod.TotalExpencesWithPrevious}
                         />
+                        
                         <div className="user-plans-wrapper">
+                        <HideComponent 
+                            isHide={selectedPeriod.CurrentYear != (new Date()).getFullYear() || (recommendations && recommendations.length < 1)}
+                        >
+                            <RecommendationComponent recommendations={recommendations} />
+                        </HideComponent>
                             {/* <UserTargetStepsComponent /> */}
-                            <InvestmentPlanComponent store={this.reportStore}/>
-                            <PeriodExpencesComponent selectedPeriod = {selectedPeriod}/>
+                            <InvestmentPlanComponent store={this.reportStore} />
+                            <PeriodExpencesComponent selectedPeriod={selectedPeriod} />
                         </div>
                     </div>
                 </HideComponent>

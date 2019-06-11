@@ -63,7 +63,6 @@ export default class BudgetInputStore extends BSMobxStore {
     @observable
     currentTypes = []
 
-
     @computed
     get incomeSum() {
         return this.incomeItems.reduce(function (prevSum, currentEl) {
@@ -88,6 +87,7 @@ export default class BudgetInputStore extends BSMobxStore {
         var dt = getIncomeItems();
         dt.then((data) => {
             this.incomeItems = data;
+            this.wasLoaded = true;
         });
 
     }

@@ -1,6 +1,58 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { observable, action, toJS } from 'mobx';
+import NumberFormat from 'react-number-format';
+
+
+class CustomTooltip extends React.Component {
+
+    render() {
+        const { active } = this.props;
+
+        if (active) {
+            const { payload, label } = this.props;
+            return (
+                <div className="barChart-tooltip">
+                    <div className="tooltip-col">
+                        <span className="tooltip-col-title">Капитал</span>
+                        <span className="tooltip-col-value">
+                            <NumberFormat
+                                value={Math.round(`${payload[0].value}`)}
+                                thousandSeparator=' '
+                                displayType={'text'}
+                                suffix=' &#8381;'
+                            />
+                        </span>
+                    </div>
+                    <div className="tooltip-col">
+                        <span className="tooltip-col-title">Расходы</span>
+                        <span className="tooltip-col-value">
+                            <NumberFormat
+                                value={Math.round(`${payload[1].value}`)}
+                                thousandSeparator=' '
+                                displayType={'text'}
+                                suffix=' &#8381;'
+                            />
+                        </span>
+                    </div>
+                </div>
+            );
+        }
+        return (
+            <div className="barChart-tooltip">
+                <div className="tooltip-col">
+                    <span className="tooltip-col-title">Капитал</span>
+                </div>
+                <div className="tooltip-col">
+                    <span className="tooltip-col-title">Расходы</span>
+
+                </div>
+            </div>
+        );
+    }
+}
+
+
 
 
 class BarChartComponent extends React.Component {
@@ -29,10 +81,9 @@ class BarChartComponent extends React.Component {
     }
 
     onFrontClick = () => {
-        debugger;
 
-//TODO выполнять этот расчет один раз при получении графика
-//но пока что не получается из за того что в другом месте если вызываю то this.myChart.current === null
+        //TODO выполнять этот расчет один раз при получении графика
+        //но пока что не получается из за того что в другом месте если вызываю то this.myChart.current === null
 
         const width = this.myChart.current.offsetWidth;//ширина контейнера с графиком
         this.translateOffset = width / 2; //двигаем картинку на половину
@@ -40,7 +91,7 @@ class BarChartComponent extends React.Component {
         //определяем сколько раз можно сдвинуть график
         //нужно посчитать сколько частей ширины translateOffset составляет вся ширина графика
         //из полученный величины вычитаем видимую часть графика, т.к. она уже перед нами
-//TODO на resize контейнера с графиком пересчитывать все и двигать его в начало, а то сбивается количество кликов
+        //TODO на resize контейнера с графиком пересчитывать все и двигать его в начало, а то сбивается количество кликов
 
         if (this.currentClickCount === this.maxClicks) //если накликали максимум , то график не двигаем
             return;
@@ -50,7 +101,6 @@ class BarChartComponent extends React.Component {
     }
 
     calcOffset = (chartWidth) => {
-        debugger;
         if (this.myChart.current) {
             const width = this.myChart.current.offsetWidth;
             this.translateOffset = width / 2;
@@ -78,10 +128,15 @@ class BarChartComponent extends React.Component {
                             <CartesianGrid strokeDasharray="0 0" />
                             <XAxis dataKey="CurrentYear" />
                             {/* <YAxis/> */}
-                            <Tooltip />
+                            <Tooltip
+                                content={<CustomTooltip />}
+                                offset={-120}
+                                //coordinate={{x: 30, y: 40}}
+                                // position={{x: 0, y: 0}}
+                            />
                             <Bar
                                 barSize={60}
-                                dataKey="Kapital"
+                                dataKey="Capital"
                                 stackId="a"
                                 fill="#3D6AC7"
                                 onClick={this.props.onBarClick}

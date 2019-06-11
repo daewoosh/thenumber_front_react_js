@@ -10,6 +10,8 @@ import Select from 'react-select';
 
 import ru from 'date-fns/locale/ru';
 import DeviceDataUsage from 'material-ui/SvgIcon';
+import uuid from 'uuid/v1';
+import HideComponent from '../../bs_react_lib/components/HideComponent';
 //registerLocale('ru', ru);
 
 
@@ -111,14 +113,14 @@ const getInputRangeTemplate = ({ props }) => {
 }
 
 const getPercentInputTemplate = ({ props }) => {
-    props.maxLength = 3;
-    const addit = { maxLength: 3 }
+    props.maxLength = 4;
+    const addit = { maxLength: 4 }
     return (
         <NumberFormat
             allowNegative={false}
             onValueChange={props.onChange}
             value={props.value}
-            className="form-control"
+            className={props.error ? "form-control error" : "form-control"}
             {...addit}
             suffix='%'
         />
@@ -129,10 +131,10 @@ const getMoneyInputTemplate = ({ props }) => {
     return (
         <NumberFormat
             allowNegative={false}
-            value={props.value}
+            value={Math.round(props.value)}
             onValueChange={props.onChange}
             thousandSeparator=' '
-            className="form-control"
+            className={props.error ? "form-control error" : "form-control"}
         />
     );
 }
@@ -177,9 +179,22 @@ const getMonthsInputTemplate = ({ props }) => {
             isClearable={false}
             onChange={props.onChange}
             options={monthsOptions}
+            error={props.error}
         />
     );
 }
+
+const getCheckBoxInputTemplate = ({ props }) => {
+    const grId = uuid();
+    return (
+        <label for={grId} className="full-width">
+            <input type="checkbox" checked={props.value} id={grId} onChange={props.onChange} />
+            {props.label}
+        </label>
+    );
+}
+
+
 
 const getControlTemplate = ({ type, ...props }) => {
     let field = null
@@ -207,6 +222,8 @@ const getControlTemplate = ({ type, ...props }) => {
         field = getCurrencyInputTemplate({ props });
     if (type == 'months')
         field = getMonthsInputTemplate({ props });
+    if (type == "bool")
+        field = getCheckBoxInputTemplate({ props });
     return field;
 };
 
@@ -228,7 +245,7 @@ class DateTimeInput extends React.Component {
             <div className="datepicker-wrapper">
                 <DatePicker
                     locale="ru"
-                    className="form-control"
+                    className={this.props.error ? "form-control error" : "form-control"}
                     selected={dateValue}
                     onChange={this.handleChange}
                     dateFormat="DD.MM.YYYY"
@@ -250,17 +267,23 @@ class SelectList extends React.Component {
     }
 
     handleChange(selectedValue) {
-
         this.props.onChange(selectedValue);
     }
 
 
     render() {
+        debugger;
         const value2 = this.props.value;
         var selected = this.props.options.filter(item => item.value == value2)[0];
         if (!selected)
             selected = null;
-        debugger;
+
+        let colourStyles = {};
+        if (this.props.error) {
+            colourStyles = {
+                control: styles => ({ ...styles, borderColor: 'red', borderWidth:'2px' }),
+            }
+        }
         return (
             <Select
                 className="form-select"
@@ -270,6 +293,7 @@ class SelectList extends React.Component {
                 onChange={this.handleChange}
                 options={this.props.options}
                 placeholder="Выберите"
+                styles={colourStyles}
             />
         );
     }
@@ -286,6 +310,11 @@ export default class FormInput extends React.Component {
             <div className={'flex-control-group panel-form-group ' + this.props.classNames} style={this.props.custStyle}>
                 <label htmlFor={this.props.name}>{this.props.label}</label>
                 {control}
+                <HideComponent isHide={!this.props.error}>
+                    <div className='control-error'>
+                        {this.props.error}
+                    </div>
+                </HideComponent>
             </div>
         );
     }

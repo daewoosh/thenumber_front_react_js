@@ -14,7 +14,6 @@ export default class CommonStore extends BSMobxStore {
 
     @action
     toggleRefreshAvatar = () => {
-        debugger;
         this.changeAvatar = !this.changeAvatar;
     }
 

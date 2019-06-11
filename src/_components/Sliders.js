@@ -35,43 +35,43 @@ export class TargetSliders extends React.Component {
         this.onAgeSliderChange = this.onAgeSliderChange.bind(this);
         this.onIncomeSliderChange = this.onIncomeSliderChange.bind(this);
         this.onChangeComplete = this.onChangeComplete.bind(this);
+        this.onLiveAgeSliderChange = this.onLiveAgeSliderChange.bind(this);
         this.state = {
             age: 0,
             income: 0,
-            kapital: 0,
+            capital: 0,
             range: [{ value: 2, step: 2 }, { value: 6 }],
-            kapitalRange: [{ value: 2, step: 2 }, { value: 6 }],
+            capitalRange: [{ value: 2, step: 2 }, { value: 6 }],
             income2: 0,
             update: false,
         };
     }
 
     componentWillReceiveProps() {
-        debugger;
-      //  this.calcStore.updateByAge(this.calcStore.selectedAge);
+        //  this.calcStore.updateByAge(this.calcStore.selectedAge);
         this.setState({
             age: this.calcStore.selectedAge,
             income: this.calcStore.selectedIncome,
-            kapital: this.calcStore.selectedKapital,
+            capital: this.calcStore.selectedCapital,
             range: this.calcStore.incomeRange,
-            kapitalRange: this.calcStore.kapitalRange,
+            capitalRange: this.calcStore.capitalRange,
             income2: this.calcStore.selectedIncome,
             update: false,
         });
     }
 
     onAgeSliderChange(value) {
+        const { selectedLiveAge } = this.calcStore;
+        if (value >= selectedLiveAge)
+            return false;
         this.calcStore.updateByAge(value);
+    }
 
-        this.setState({
-            age: this.calcStore.selectedAge,
-            income: this.calcStore.selectedIncome,
-            //   range:this.calcStore.incomeRange,
-            income2: this.calcStore.selectedIncome,
-            kapital: this.calcStore.selectedKapital,
-            //kapitalRange : 
-            update: true,
-        });
+    onLiveAgeSliderChange(value) {
+        const { selectedAge } = this.calcStore;
+        if (value <= selectedAge)
+            return false;
+        this.calcStore.updateLiveByAge(value);
     }
 
     onIncomeSliderChange(value) {
@@ -80,20 +80,18 @@ export class TargetSliders extends React.Component {
             age: this.calcStore.selectedAge,
             income: this.calcStore.selectedIncome,
             income2: this.calcStore.selectedIncome,
-            kapital: this.calcStore.selectedKapital,
-            //  range:this.calcStore.incomeRange,
+            capital: this.calcStore.selectedCapital,
             update: true,
         });
     }
 
     onChangeComplete(value) {
-        debugger;
         this.calcStore.updateByIncome(value);
         this.setState({
             age: this.calcStore.selectedAge,
             income: this.calcStore.selectedIncome,
             income2: this.calcStore.selectedIncome,
-            kapital: this.calcStore.selectedKapital,
+            capital: this.calcStore.selectedCapital,
             //range:this.calcStore.incomeRange,
             update: true,
         });
@@ -101,23 +99,21 @@ export class TargetSliders extends React.Component {
 
 
     render() {
-        const {minAge,maxAge,selectedAge,} = this.calcStore;
+        const { minAge, maxAge, selectedAge, selectedLiveAge } = this.calcStore;
 
-        const {selectedIncome,incomeRange}=this.calcStore;
-        const {kapitalRange, selectedKapital} =this.calcStore;
+        const { selectedIncome, incomeRange } = this.calcStore;
+        const { capitalRange, selecteCapital } = this.calcStore;
 
         return (
             <div className="slider-form">
-                <div className="panel-form-group">
+                {/* <div className="panel-form-group">
                     <label>Возраст</label>
                     <input type="text" className="form-control" name="LastName" value={selectedAge} disabled />
                     <Slider min={minAge} max={maxAge} value={selectedAge} step={1} handle={handle} onChange={this.onAgeSliderChange} />
-                    {/* <input type="range" min={this.calcStore.minAge} max={100} value={this.state.age} step="1" onChange={this.onAgeSliderChange}/> */}
                 </div>
                 <div className="panel-form-group">
                     <label>Доход</label>
                     <input type="text" className="form-control" name="LastName" value={selectedIncome} disabled />
-                    {/* <Slider min={this.calcStore.minIncome} max={this.calcStore.maxIncome} value={this.state.income} handle={handle} onChange={this.onIncomeSliderChange} />                */}
                     <StepRangeSlider
                         value={selectedIncome}
                         defaultValue={selectedIncome}
@@ -130,8 +126,6 @@ export class TargetSliders extends React.Component {
                 <div className="panel-form-group">
                     <label>Капитал</label>
                     <input type="text" className="form-control" name="LastName" value={selectedKapital} disabled />
-                    {/* <Slider min={this.calcStore.minKapital} max={this.calcStore.maxKapital} value={this.state.kapital} handle={handle} disabled />                */}
-
                     <StepRangeSlider
                         value={selectedKapital}
                         defaultValue={selectedKapital}
@@ -140,6 +134,30 @@ export class TargetSliders extends React.Component {
                         children={null}
                         update={this.state.update}
                         disabled
+                    />
+                </div> */}
+                <div className="panel-form-group">
+                    <label>Выйти на пенсию</label>
+                    <input type="text" className="form-control" name="LastName" value={selectedAge} disabled />
+                    <Slider
+                        min={minAge}
+                        max={maxAge}
+                        value={selectedAge}
+                        step={1}
+                        handle={handle}
+                        onChange={this.onAgeSliderChange}
+                    />
+                </div>
+                <div className="panel-form-group">
+                    <label>Тратить до</label>
+                    <input type="text" className="form-control" name="LastName" value={selectedLiveAge} disabled />
+                    <Slider
+                        min={minAge}
+                        max={maxAge}
+                        value={selectedLiveAge}
+                        step={1}
+                        handle={handle}
+                        onChange={this.onLiveAgeSliderChange}
                     />
                 </div>
             </div>
